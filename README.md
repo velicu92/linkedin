@@ -1,6 +1,54 @@
 # LinkedIn posts of [Valerii Velicu](https://www.linkedin.com/in/valeriivelicu/)
 
-## CASE statement within an aggregate function
+## [Elements of the pivot syntax](https://www.linkedin.com/posts/valeriivelicu_sql-dbt-dataengineering-activity-7166107088128069632-6Azu)
+
+```
+In my last post I used the PIVOT #sql function to transform a narrow (long) table into a wider table, but are you familiar with the components of the syntax? Let's see below what they are: 
+
+✅ The base table. It can be a CTE or a table from database. I always recommend using a CTE and only select the columns you need, it helps understanding the logic behind. You can also apply some transformations such as month and year extraction in my example.
+✅ The aggregate function and the column you want to aggregate. Based on the platform and the type of data - you can specify aggregate functions such as AVG, COUNT, MAX, MIN, SUM, LISTAGG and many more.
+✅ The column you want to transpose which usually contains a list of categories.
+✅ The distinct values of the transposed column. You will have to run an analysis beforehand in order to identify the distinct values. 
+✅ Optionally, you can include a section to rename your columns after the PIVOT is executed. In my example, without this section the column names would contain a single quote i.e. 'MACHINERY' instead of MACHINERY. You can also rename your columns in the SELECT clause with 'MACHINERY' as MACHINERY. 
+
+The most challenging part of using PIVOT in SQL is to get the distinct values of the transposed column. Most of the time the categories in this column can change or can be added/removed so you will need to automate it. Unfortunately, SQL does not have this functionality natively. If you are using #dbt - you're lucky since you can can automate this part, I will talk about it in a future post. 
+
+My LinkedIn posts are on GitHub. If you want to re-use the code from my examples make sure to follow me there: 
+
+#DataEngineering
+#DataAnalytics
+#Snowflake
+```
+
+```sql
+with orders as (
+    select 
+            TO_VARCHAR(O_ORDERDATE, 'yyyy-MM')
+        ,   O_TOTALPRICE
+        ,   C_MKTSEGMENT
+    from SNOWFLAKE_SAMPLE_DATA.TPCH_SF10.ORDERS
+    left join SNOWFLAKE_SAMPLE_DATA.TPCH_SF10.CUSTOMER
+        on O_CUSTKEY = C_CUSTKEY
+)
+SELECT *
+FROM orders 
+    pivot (
+        sum(O_TOTALPRICE) for C_MKTSEGMENT in 
+      		('MACHINERY', 
+             'HOUSEHOLD', 
+             'FURNITURE', 
+             'AUTOMOBILE', 
+             'BUILDING')
+    ) as p (MONTH, 
+            MACHINERY, 
+            HOUSEHOLD, 
+            FURNITURE, 
+            AUTOMOBILE, 
+            BUILDING)
+;
+```
+
+## [CASE statement within an aggregate function](https://www.linkedin.com/posts/valeriivelicu_sql-datanalytics-dataengineering-activity-7163697893885902851-lOz3)
 
 ```
 Lately, there have been a lot of discussions on LinkedIn around the usage of a CASE statement within an aggregate function in SQL. Therefore I developed 2 queries:the first, on the left, incorporates CASE statements within the SUM aggregate function, while the second query on the right uses the PIVOT function. Both queries return the same results. 
