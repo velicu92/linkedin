@@ -1,5 +1,40 @@
 # LinkedIn posts of [Valerii Velicu](https://www.linkedin.com/in/valeriivelicu/)
 
+## [TRUNCATE command in Snowflake]()
+
+```
+Have you ever used the TRUNCATE command in sql? 
+
+Truncate removes all rows from a table keeping the table structure unchanged and I've used it in #Snowflake. It's worth noting that constraints, privileges, indexes, etc. are not removed. 
+
+This is how the function works in general but specifically in Snowflake it also removes the LOAD METADATA of the table.
+
+If your table contains external data that was loaded using COPY INTO command, after the TRUNCATE command was executed you can reload the previously loaded data. This becomes very useful in the developing stage of your project, just follow 3 steps:
+✅ change the external source data;
+✅ execute the truncate command against your table;
+✅ trigger a reload.
+
+#DataEngineering
+#DataAnalytics
+#Snowflake
+
+Don't forget that my code is on GitHub if you want to exercise: https://github.com/velicu92/linkedin?tab=readme-ov-file
+```
+
+```sql
+create table ADHOC.PUBLIC.ORDERS as 
+select * from SNOWFLAKE_SAMPLE_DATA.TPCH_SF10.ORDERS
+;
+select * from ADHOC.PUBLIC.ORDERS limit 10;
+--- 10 rows returned
+
+truncate ADHOC.PUBLIC.ORDERS;
+
+select * from ADHOC.PUBLIC.ORDERS;
+--- 0 rows returned (the table is empty)
+
+```
+
 ## [Elements of the pivot syntax](https://www.linkedin.com/posts/valeriivelicu_sql-dbt-dataengineering-activity-7166107088128069632-6Azu)
 
 ```
@@ -13,7 +48,7 @@ In my last post I used the PIVOT #sql function to transform a narrow (long) tabl
 
 The most challenging part of using PIVOT in SQL is to get the distinct values of the transposed column. Most of the time the categories in this column can change or can be added/removed so you will need to automate it. Unfortunately, SQL does not have this functionality natively. If you are using #dbt - you're lucky since you can can automate this part, I will talk about it in a future post. 
 
-My LinkedIn posts are on GitHub. If you want to re-use the code from my examples make sure to follow me there: 
+My LinkedIn posts are on GitHub. If you want to re-use the code from my examples make sure to follow me there: https://github.com/velicu92/linkedin?tab=readme-ov-file 
 
 #DataEngineering
 #DataAnalytics
